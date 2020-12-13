@@ -23,10 +23,10 @@
     dest: /tmp/wordpress-{{ wordpress_version }}.tar.gz
 
 - name: "Verify Wordpress Package."
- command: "{{ item.hash }}sum -c /tmp/wordpress-{{ wordpress_version }}.tar.gz.{{ item.hash }}"
- args:
-   chdir: /tmp/
- with_items: "{{ wordpress_hashes }}"
+  command: "{{ item.hash }}sum -c /tmp/wordpress-{{ wordpress_version }}.tar.gz.{{ item.hash }}"
+  args:
+    chdir: /tmp/
+  with_items: "{{ wordpress_hashes }}"
 
 - name: "Unpack the Wordpress Archive."
   unarchive:

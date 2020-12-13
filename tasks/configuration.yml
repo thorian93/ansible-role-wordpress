@@ -95,7 +95,7 @@
 - name: "Configure Backup Script Cron."
   cron:
     name: "Wordpress Backup"
-    weekday: '3' #Wednesday
+    weekday: '3'  # Wednesday
     hour: '1'
     minute: '0'
     user: root
