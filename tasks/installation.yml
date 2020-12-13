@@ -1,0 +1,38 @@
+---
+- name: "Install Prerequisites."
+  package:
+    name: "{{ wordpress_prerequisites }}"
+    state: present
+  notify: restart webserver
+
+- name: "Install optional Prerequisites."
+  package:
+    name: "{{ wordpress_prerequisites_opt }}"
+    state: present
+  notify: restart webserver
+
+- name: "Download Wordpress Hashes."
+  get_url:
+    url: "{{ item.url }}"
+    dest: /tmp/wordpress-{{ wordpress_version }}.tar.gz.{{ item.hash }}
+  with_items: "{{ wordpress_hashes }}"
+
+- name: "Download Wordpress Package."
+  get_url:
+    url: "{{ wordpress_download_url }}"
+    dest: /tmp/wordpress-{{ wordpress_version }}.tar.gz
+
+- name: "Verify Wordpress Package."
+ command: "{{ item.hash }}sum -c /tmp/wordpress-{{ wordpress_version }}.tar.gz.{{ item.hash }}"
+ args:
+   chdir: /tmp/
+ with_items: "{{ wordpress_hashes }}"
+
+- name: "Unpack the Wordpress Archive."
+  unarchive:
+    src: /tmp/wordpress-{{ wordpress_version }}.tar.gz
+    dest: /var/www/
+    remote_src: 'yes'
+    owner: "{{ apache2_http_user }}"
+    group: "{{ apache2_http_user }}"
+    keep_newer: 'yes'

@@ -1,0 +1,26 @@
+---
+- name: "Preflight - Fail if target host is not stable for this Role."
+  fail:
+    msg: "This role is not stable for the target operating system, {{ ansible_distribution }} {{ ansible_distribution_major_version }}."
+  when: (ansible_distribution is not defined) or
+        (ansible_distribution_version is not defined) or
+        (ansible_distribution+" "+ansible_distribution_major_version not in wordpress_stable_os)
+
+- name: "Include OS Family specific Variables."
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: "Check Wordpress Installation."
+  stat:
+    path: "{{ wordpress_web_dir }}/wp-config.php"
+  register: wordpress_install_status
+
+- name: "Register Installation Status."
+  set_fact:
+    wordpress_installed: "{% if wordpress_install_status.stat.exists %}true{% else %}false{% endif %}"
+
+- name: "Install Wordpress."
+  include_tasks: installation.yml
+  when: not wordpress_installed
+
+- name: "Configure Wordpress."
+  include_tasks: configuration.yml

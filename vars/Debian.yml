@@ -1,0 +1,15 @@
+---
+apache2_http_name: apache2
+apache2_http_user: www-data
+
+wordpress_prerequisites:
+  - "libapache2-mod-php{% if php_major_version != 5 %}{{ php_version_prefix }}{% else %}5{% endif %}"
+  - "php{% if php_major_version != 5 %}{{ php_version_prefix }}{% else %}5{% endif %}-gd"
+  - "php{% if php_major_version != 5 %}{{ php_version_prefix }}{% else %}5{% endif %}-mysql"
+
+
+wordpress_prerequisites_opt:
+  - "{% if php_major_version != 5 %}php{{ php_version_prefix }}-dom{% else %}bash{% endif %}"
+  - "php{% if php_major_version != 5 %}{{ php_version_prefix }}{% else %}5{% endif %}-imagick"
+  - "{% if php_major_version != 5 %}php{{ php_version_prefix }}-mbstring{% else %}bash{% endif %}"
+  - "{% if php_major_version != 5 %}php{{ php_version_prefix }}-zip{% else %}bash{% endif %}"

@@ -1,0 +1,109 @@
+---
+- name: "Create Database for Wordpress."
+  mysql_db:
+    login_user: "{{ mysql_root_user }}"
+    login_password: "{{ mysql_root_pw }}"
+    login_unix_socket: "{{ mysql_unix_socket }}"
+    name: "{{ wordpress_db_name }}"
+    encoding: utf8
+    state: present
+
+- name: "Create Database User for Wordpress."
+  mysql_user:
+    login_user: "{{ mysql_root_user }}"
+    login_password: "{{ mysql_root_pw }}"
+    login_unix_socket: "{{ mysql_unix_socket }}"
+    name: "{{ wordpress_db_user }}"
+    password: "{{ wordpress_db_pw }}"
+    priv: "{{ wordpress_db_name }}.*:ALL"
+    append_privs: 'no'
+    state: present
+
+- name: "Create self-signed Certificate."
+  command: 'openssl req -new -nodes -x509 -subj "{{wordpress_self_signed_cert_subj}}" -days 365 -keyout {{wordpress_self_signed_certificate_key}} -out {{wordpress_self_signed_certificate}} -extensions v3_ca'
+  args:
+    creates: "{{wordpress_self_signed_certificate}}"
+  when: wordpress_create_self_signed_cert | bool
+
+- name: "Copy Wordpress Configuration File for Apache2."
+  template:
+    src: wordpress.conf.j2
+    dest: "{{ apache2_http_site_dir }}/wordpress.conf"
+    owner: root
+    group: root
+    mode: '0600'
+    backup: 'yes'
+    force: 'yes'
+  notify: reload webserver
+
+- name: "Enable Apache2 Modules."
+  apache2_module:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ wordpress_apache2_modules }}"
+  notify: restart webserver
+
+- name: "Enable Wordpress Configuration."
+  command: a2ensite wordpress.conf
+  args:
+    creates: "/etc/apache2/sites-enabled/wordpress.conf"
+  notify: reload webserver
+  when: ansible_os_family == "Debian"
+
+- name: "Copy the Wordpress scripts."
+  template:
+    src: "{{ item }}"
+    dest: "{{ common_scripting_path }}/{{ item }}"
+  with_items:
+    - wordpress_set_secure_dir_perms.sh
+
+- name: "Fetch random salts for wp-config.php."
+  uri:
+    url: https://api.wordpress.org/secret-key/1.1/salt/
+    return_content: 'true'
+  register: wp_salt
+
+- name: "Upload Custom Configuration File."
+  template:
+    src: wp-config.php.j2
+    dest: "{{ wordpress_web_dir }}/wp-config.php"
+    owner: "{{ apache2_http_user }}"
+    group: "{{ apache2_http_user }}"
+    mode: '0600'
+    backup: 'yes'
+    force: 'yes'
+
+- name: "Upload Backup logrotate Configuration."
+  template:
+    src: wordpress-backup.logrotate.j2
+    dest: /etc/logrotate.d/wordpress-backup"
+    mode: '0755'
+    owner: root
+    group: root
+
+- name: "Upload Backup Script."
+  template:
+    src: wordpress-backup.sh.j2
+    dest: "{{ common_scripting_path }}/wordpress-backup.sh"
+    owner: root
+    group: root
+    mode: '0700'
+    backup: 'yes'
+    force: 'yes'
+  when: wordpress_backup | bool
+
+- name: "Configure Backup Script Cron."
+  cron:
+    name: "Wordpress Backup"
+    weekday: '3' #Wednesday
+    hour: '1'
+    minute: '0'
+    user: root
+    job: "/bin/bash {{ common_scripting_path }}/wordpress-backup.sh"
+    state: "{% if wordpress_backup %}present{% else %}absent{% endif %}"
+
+- name: "Set Secure Permissions."
+  shell: /bin/bash "{{ common_scripting_path }}/wordpress_set_secure_dir_perms.sh"
+  args:
+    chdir: /tmp/
+    executable: /bin/bash

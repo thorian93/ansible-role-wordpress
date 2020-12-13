@@ -1,0 +1,13 @@
+---
+apache2_http_name: httpd
+apache2_http_user: apache
+
+wordpress_prerequisites:
+  - "php{{ php_version_prefix }}{{ php_repo_suffix }}-gd"
+  - "php{{ php_version_prefix }}{{ php_repo_suffix }}-mysqlnd"
+
+wordpress_prerequisites_opt:
+  - "php{{ php_version_prefix }}{{ php_repo_suffix }}-mbstring"
+  - "php{{ php_version_prefix }}{{ php_repo_suffix }}-dom"
+  - "php{{ php_version_prefix }}{{ php_repo_suffix }}-imagick"
+  - "php{{ php_version_prefix }}{{ php_repo_suffix }}-zip"

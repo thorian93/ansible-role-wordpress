@@ -1,0 +1,34 @@
+---
+galaxy_info:
+  author: Thorian93
+  description: Ansible Role Wordpress
+  license: "license (MIT)"
+
+  min_ansible_version: 2.9
+
+  galaxy_tags:
+    - linux
+    - server
+    - web
+    - wordpress
+
+  platforms:
+    - name: Debian
+      versions:
+        - Stretch
+        - Buster
+    - name: Ubuntu
+      versions:
+        - Bionic
+        - Focal
+
+dependencies:
+  - name: thorian93.ansible_role_apache2
+    version: master
+  - name: thorian93.ansible_role_php
+    version: master
+  # - name: thorian93.ansible_role_certbot
+  #   version: master
+  - { role: thorian93.ansible_role_certbot, when: wordpress_create_self_signed_cert == "false" }
+  - name: thorian93.ansible_role_mysql
+    version: master
