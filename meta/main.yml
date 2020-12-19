@@ -27,8 +27,5 @@ dependencies:
     version: master
   - name: thorian93.ansible_role_php
     version: master
-  # - name: thorian93.ansible_role_certbot
-  #   version: master
-  - { role: thorian93.ansible_role_certbot, when: wordpress_create_self_signed_cert == "false" }
   - name: thorian93.ansible_role_mysql
     version: master
