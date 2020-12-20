@@ -11,22 +11,10 @@
     state: present
   notify: restart webserver
 
-- name: "Download Wordpress Hashes."
-  get_url:
-    url: "{{ item.url }}"
-    dest: /tmp/wordpress-{{ wordpress_version }}.tar.gz.{{ item.hash }}
-  with_items: "{{ wordpress_hashes }}"
-
 - name: "Download Wordpress Package."
   get_url:
     url: "{{ wordpress_download_url }}"
     dest: /tmp/wordpress-{{ wordpress_version }}.tar.gz
-
-- name: "Verify Wordpress Package."
-  command: "{{ item.hash }}sum -c /tmp/wordpress-{{ wordpress_version }}.tar.gz.{{ item.hash }}"
-  args:
-    chdir: /tmp/
-  with_items: "{{ wordpress_hashes }}"
 
 - name: "Unpack the Wordpress Archive."
   unarchive:

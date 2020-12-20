@@ -5,48 +5,32 @@ wordpress_stable_os:
   - Ubuntu 18
   - Ubuntu 20
 
-# The URL under which Wordpress is available
 wordpress_external_url: "{{ inventory_hostname }}"
 
-# Download
 wordpress_version: "5.6"
 wordpress_base_url: "https://wordpress.org"
 wordpress_download_url: "{{ wordpress_base_url }}/wordpress-{{ wordpress_version }}.tar.gz"
-wordpress_md5_url: "{{wordpress_download_url}}.md5"
-wordpress_sha1_url: "{{wordpress_download_url}}.sha1"
 
-wordpress_hashes:
-  - url: "{{wordpress_md5_url}}"
-    hash: md5
-  - url: "{{wordpress_sha1_url}}"
-    hash: sha1
+wordpress_redirect_http_to_https: 'true'
 
-wordpress_redirect_http_to_https: true
-
-# Certificates:
-## Self Signed
-wordpress_create_self_signed_cert: true
+wordpress_create_self_signed_cert: 'true'
 wordpress_self_signed_cert_subj: "/C=DE/ST=NRW/L=Cologne/O=Org/CN={{ wordpress_external_url }}"
 wordpress_self_signed_certificate_key: "/etc/apache2/ssl/wordpress.key"
 wordpress_self_signed_certificate: "/etc/apache2/ssl/wordpress.crt"
 
-## Custom
 wordpress_custom_cert: false
 wordpress_custom_cert_file: /etc/{{ apache2_http_name }}/ssl/wordpress.crt
 wordpress_custom_cert_key: /etc/{{ apache2_http_name }}/ssl/wordpress.key
 
-## LetsEncrypt:
 wordpress_certificate_key: "{{ certbot_cert_path }}/privkey.pem"
 wordpress_certificate: "{{ certbot_cert_path }}/cert.pem"
 wordpress_certificate_chain: "{{ certbot_cert_path }}/fullchain.pem"
 
-# Database
 wordpress_db_system: "mysql"
 wordpress_db_name: "wordpress"
 wordpress_db_user: "wordpress"
 wordpress_db_pw: "wordpress"
 
-# Misc
-wordpress_backup: true
+wordpress_backup: 'true'
 wordpress_backup_path: "/tmp"
 wordpress_web_dir: "/var/www/wordpress"
