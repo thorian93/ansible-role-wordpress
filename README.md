@@ -33,13 +33,7 @@ The external URL under which Wordpress will be available.
 
     wordpress_base_url: "https://wordpress.org"
     wordpress_download_url: "{{ wordpress_base_url }}/wordpress-{{ wordpress_version }}.tar.gz"
-    wordpress_md5_url: "{{wordpress_download_url}}.md5"
-    wordpress_sha1_url: "{{wordpress_download_url}}.sha1"
-    wordpress_hashes:
-      - url: "{{wordpress_md5_url}}"
-        hash: md5
-      - url: "{{wordpress_sha1_url}}"
-        hash: sha1
+
 
 Download parameters for Wordpress. Should only be changed if you know what you are doing.
 
