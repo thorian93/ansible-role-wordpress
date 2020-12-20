@@ -12,7 +12,7 @@
 - name: "Run Certbot Role conditionally."
   include_role:
     name: thorian93.ansible_role_certbot
-  when: (not wordpress_create_self_signed_cert | bool) or (not wordpress_custom_cert | bool)
+  when: (not wordpress_create_self_signed_cert | bool) or (wordpress_custom_cert | bool)
 
 - name: "Check Wordpress Installation."
   stat:
