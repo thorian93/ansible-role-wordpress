@@ -18,7 +18,7 @@ wordpress_self_signed_cert_subj: "/C=DE/ST=NRW/L=Cologne/O=Org/CN={{ wordpress_e
 wordpress_self_signed_certificate_key: "/etc/apache2/ssl/wordpress.key"
 wordpress_self_signed_certificate: "/etc/apache2/ssl/wordpress.crt"
 
-wordpress_custom_cert: false
+wordpress_custom_cert: 'false'
 wordpress_custom_cert_file: /etc/{{ apache2_http_name }}/ssl/wordpress.crt
 wordpress_custom_cert_key: /etc/{{ apache2_http_name }}/ssl/wordpress.key
 
