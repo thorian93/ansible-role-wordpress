@@ -5,9 +5,10 @@ wordpress_stable_os:
   - Ubuntu 18
   - Ubuntu 20
 
+wordpress_version: "5.6"
+
 wordpress_external_url: "{{ inventory_hostname }}"
 
-wordpress_version: "5.6"
 wordpress_base_url: "https://wordpress.org"
 wordpress_download_url: "{{ wordpress_base_url }}/wordpress-{{ wordpress_version }}.tar.gz"
 

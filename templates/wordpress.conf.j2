@@ -18,7 +18,7 @@
 
  </Directory>
 
-{% if wordpress_redirect_http_to_https %}
+{% if wordpress_redirect_http_to_https | bool %}
  RewriteEngine on
  RewriteCond %{HTTPS} !=on
  RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [NE,R,L]
@@ -32,10 +32,10 @@
  SSLCipherSuite "ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256"
  SSLCompression Off
  # Not suported yet: SSLSessionTickets Off
-{% if wordpress_create_self_signed_cert %}
+{% if wordpress_create_self_signed_cert | bool %}
  SSLCertificateFile "{{ wordpress_self_signed_certificate }}"
  SSLCertificateKeyFile "{{ wordpress_self_signed_certificate_key }}"
-{% elif wordpress_custom_cert %}
+{% elif wordpress_custom_cert | bool %}
  SSLCertificateFile "{{ wordpress_custom_cert_file }}"
  SSLCertificateKeyFile "{{ wordpress_custom_cert_key }}"
 {% else %}
