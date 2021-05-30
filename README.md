@@ -2,9 +2,9 @@
 
 This role installs Wordpress on RHEL/CentOS, Debian/Ubuntu and Fedora servers.
 
-[![Ansible Role: Wordpress](https://img.shields.io/ansible/role/52412?style=flat-square)](https://galaxy.ansible.com/thorian93/ansible_role_wordpress)
-[![Ansible Role: Wordpress](https://img.shields.io/ansible/quality/52412?style=flat-square)](https://galaxy.ansible.com/thorian93/ansible_role_wordpress)
-[![Ansible Role: Wordpress](https://img.shields.io/ansible/role/d/52412?style=flat-square)](https://galaxy.ansible.com/thorian93/ansible_role_wordpress)
+[![Ansible Role: Wordpress](https://img.shields.io/ansible/role/55150?style=flat-square)](https://galaxy.ansible.com/thorian93/wordpress)
+[![Ansible Role: Wordpress](https://img.shields.io/ansible/quality/55150?style=flat-square)](https://galaxy.ansible.com/thorian93/wordpress)
+[![Ansible Role: Wordpress](https://img.shields.io/ansible/role/d/55150?style=flat-square)](https://galaxy.ansible.com/thorian93/wordpress)
 
 ## Known issues
 
@@ -54,7 +54,7 @@ If you want to use your own certificate you can define that here.
     wordpress_certificate: "{{ certbot_cert_path }}/cert.pem"
     wordpress_certificate_chain: "{{ certbot_cert_path }}/fullchain.pem"
 
-If `wordpress_create_self_signed_cert` and `wordpress_custom_cert` are set to false, my [ansible_role_certbot](https://galaxy.ansible.com/thorian93/ansible_role_certbot) will be used to acquire certificates.
+If `wordpress_create_self_signed_cert` and `wordpress_custom_cert` are set to false, my [ansible_role_certbot](https://galaxy.ansible.com/thorian93/certbot) will be used to acquire certificates.
 
     wordpress_db_system: "mysql"
     wordpress_db_name: "wordpress"
@@ -78,10 +78,10 @@ Enable backup of wordpress with the shipped script and define a backup destinati
 
 ## Dependencies
 
-  - [thorian93.ansible_role_apache2](https://galaxy.ansible.com/thorian93/ansible_role_apache2)
-  - [thorian93.ansible_role_php](https://galaxy.ansible.com/thorian93/ansible_role_wordpress)
-  - [thorian93.ansible_role_certbot](https://galaxy.ansible.com/thorian93/ansible_role_certbot) - when no custom or self signed certificate is used
-  - [thorian93.ansible_role_mysql](https://galaxy.ansible.com/thorian93/ansible_role_mysql)
+  - [thorian93.apache2](https://galaxy.ansible.com/thorian93/apache2)
+  - [thorian93.php](https://galaxy.ansible.com/thorian93/wordpress)
+  - [thorian93.certbot](https://galaxy.ansible.com/thorian93/certbot) - when no custom or self signed certificate is used
+  - [thorian93.mysql](https://galaxy.ansible.com/thorian93/mysql)
 
 ## OS Compatibility
 
