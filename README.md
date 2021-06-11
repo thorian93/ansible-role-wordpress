@@ -1,6 +1,6 @@
 # Ansible Role: Wordpress
 
-This role installs Wordpress on RHEL/CentOS, Debian/Ubuntu and Fedora servers.
+This role installs Wordpress on Debian/Ubuntu, RHEL/CentOS and Fedora servers.
 
 [![Ansible Role: Wordpress](https://img.shields.io/ansible/role/55150?style=flat-square)](https://galaxy.ansible.com/thorian93/wordpress)
 [![Ansible Role: Wordpress](https://img.shields.io/ansible/quality/55150?style=flat-square)](https://galaxy.ansible.com/thorian93/wordpress)
@@ -16,7 +16,7 @@ No special requirements; note that this role requires root access, so either run
 
     - hosts: foobar
       roles:
-        - role: ansible-role-wordpress
+        - role: thorian93.wordpress
           become: yes
 
 ## Role Variables

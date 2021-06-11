@@ -20,9 +20,9 @@
     state: present
 
 - name: "Create self-signed Certificate."
-  command: 'openssl req -new -nodes -x509 -subj "{{wordpress_self_signed_cert_subj}}" -days 365 -keyout {{wordpress_self_signed_certificate_key}} -out {{wordpress_self_signed_certificate}} -extensions v3_ca'
+  command: 'openssl req -new -nodes -x509 -subj "{{ wordpress_self_signed_cert_subj }}" -days 365 -keyout {{ wordpress_self_signed_certificate_key }} -out {{ wordpress_self_signed_certificate }} -extensions v3_ca'
   args:
-    creates: "{{wordpress_self_signed_certificate}}"
+    creates: "{{ wordpress_self_signed_certificate }}"
   when: wordpress_create_self_signed_cert | bool
 
 - name: "Copy Wordpress Configuration File for Apache2."
