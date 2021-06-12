@@ -1,5 +1,7 @@
 # Ansible Role: Wordpress
 
+<img src="https://img.shields.io/badge/-WordPress-%2321759B?style=for-the-badge&logo=WordPress" alt="WordPress">
+
 This role installs Wordpress on Debian/Ubuntu, RHEL/CentOS and Fedora servers.
 
 [![Ansible Role: Wordpress](https://img.shields.io/ansible/role/55150?style=flat-square)](https://galaxy.ansible.com/thorian93/wordpress)
@@ -54,7 +56,7 @@ If you want to use your own certificate you can define that here.
     wordpress_certificate: "{{ certbot_cert_path }}/cert.pem"
     wordpress_certificate_chain: "{{ certbot_cert_path }}/fullchain.pem"
 
-If `wordpress_create_self_signed_cert` and `wordpress_custom_cert` are set to false, my [ansible_role_certbot](https://galaxy.ansible.com/thorian93/certbot) will be used to acquire certificates.
+If `wordpress_create_self_signed_cert` and `wordpress_custom_cert` are set to false, [thorian93.certbot](https://galaxy.ansible.com/thorian93/certbot) will be used to acquire certificates.
 
     wordpress_db_system: "mysql"
     wordpress_db_name: "wordpress"
