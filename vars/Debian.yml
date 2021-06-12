@@ -9,6 +9,7 @@ wordpress_prerequisites:
 
 
 wordpress_prerequisites_opt:
+  - "{% if php_major_version != 5 %}php{{ php_version_prefix }}-bcmath{% else %}bash{% endif %}"
   - "{% if php_major_version != 5 %}php{{ php_version_prefix }}-dom{% else %}bash{% endif %}"
   - "php{% if php_major_version != 5 %}{{ php_version_prefix }}{% else %}5{% endif %}-imagick"
   - "{% if php_major_version != 5 %}php{{ php_version_prefix }}-mbstring{% else %}bash{% endif %}"

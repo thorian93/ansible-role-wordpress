@@ -7,6 +7,7 @@ wordpress_prerequisites:
   - "php{{ php_version_prefix }}{{ php_repo_suffix }}-mysqlnd"
 
 wordpress_prerequisites_opt:
+  - "php{{ php_version_prefix }}{{ php_repo_suffix }}-bcmath"
   - "php{{ php_version_prefix }}{{ php_repo_suffix }}-mbstring"
   - "php{{ php_version_prefix }}{{ php_repo_suffix }}-dom"
   - "php{{ php_version_prefix }}{{ php_repo_suffix }}-imagick"
