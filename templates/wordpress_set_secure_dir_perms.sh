@@ -2,8 +2,6 @@
 wppath='{{ wordpress_web_dir}}'
 htuser='{{ apache2_http_user }}'
 htgroup='{{ apache2_http_user }}'
-rootuser='root'
-
 
 printf "chmod Files and Directories\n"
 find ${wppath}/ -type f -print0 | xargs -0 chmod 0644
