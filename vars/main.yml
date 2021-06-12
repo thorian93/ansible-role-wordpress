@@ -1,3 +1,6 @@
 ---
+wordpress_base_url: "https://wordpress.org"
+wordpress_download_url: "{{ wordpress_base_url }}/wordpress-{{ wordpress_version }}.tar.gz"
+
 wordpress_apache2_modules:
   - rewrite

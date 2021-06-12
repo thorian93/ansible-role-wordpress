@@ -5,12 +5,9 @@ wordpress_stable_os:
   - Ubuntu 18
   - Ubuntu 20
 
-wordpress_version: "5.6"
+wordpress_version: "5.7"
 
 wordpress_external_url: "{{ inventory_hostname }}"
-
-wordpress_base_url: "https://wordpress.org"
-wordpress_download_url: "{{ wordpress_base_url }}/wordpress-{{ wordpress_version }}.tar.gz"
 
 wordpress_redirect_http_to_https: 'true'
 
@@ -35,3 +32,16 @@ wordpress_db_pw: "wordpress"
 wordpress_backup: 'true'
 wordpress_backup_path: "/tmp"
 wordpress_web_dir: "/var/www/wordpress"
+wordpress_scripts_dir: "{{ wordpress_web_dir }}/scripts"
+
+wordpress_php_options:
+  - line: "post_max_size = 2G"
+    regexp: "^post_max_size ="
+  - line: "upload_max_filesize = 2G"
+    regexp: "^upload_max_filesize ="
+  - line: "max_execution_time = 300"
+    regexp: "^max_execution_time ="
+  - line: "max_input_time = 300"
+    regexp: "^max_input_time ="
+  - line: "memory_limit = 512M"
+    regexp: "^memory_limit ="
