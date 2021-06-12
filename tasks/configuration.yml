@@ -127,4 +127,3 @@
     user: root
     job: "/bin/bash {{ wordpress_scripts_dir }}/wordpress_backup.sh"
     state: "{% if wordpress_backup %}present{% else %}absent{% endif %}"
-
