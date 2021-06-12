@@ -20,7 +20,7 @@
   unarchive:
     src: /tmp/wordpress-{{ wordpress_version }}.tar.gz
     dest: /var/www/
-    remote_src: 'yes'
+    remote_src: 'true'
     owner: "{{ apache2_http_user }}"
     group: "{{ apache2_http_user }}"
-    keep_newer: 'yes'
+    keep_newer: 'true'

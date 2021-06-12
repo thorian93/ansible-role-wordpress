@@ -1,22 +1,20 @@
 ---
 - name: "Create Database for Wordpress."
   mysql_db:
-    login_user: "{{ mysql_root_user }}"
-    login_password: "{{ mysql_root_pw }}"
-    login_unix_socket: "{{ mysql_unix_socket }}"
+    login_user: "{{ mysql_root_username }}"
+    login_password: "{{ mysql_root_password }}"
     name: "{{ wordpress_db_name }}"
     encoding: utf8
     state: present
 
 - name: "Create Database User for Wordpress."
   mysql_user:
-    login_user: "{{ mysql_root_user }}"
-    login_password: "{{ mysql_root_pw }}"
-    login_unix_socket: "{{ mysql_unix_socket }}"
+    login_user: "{{ mysql_root_username }}"
+    login_password: "{{ mysql_root_password }}"
     name: "{{ wordpress_db_user }}"
     password: "{{ wordpress_db_pw }}"
     priv: "{{ wordpress_db_name }}.*:ALL"
-    append_privs: 'no'
+    append_privs: 'false'
     state: present
 
 - name: "Create self-signed Certificate."
@@ -25,16 +23,27 @@
     creates: "{{ wordpress_self_signed_certificate }}"
   when: wordpress_create_self_signed_cert | bool
 
+- name: Configure Apache PHP ini file for Wordpress.
+  lineinfile:
+    dest: "/etc/php/{{ php_major_version }}.{{ php_minor_version }}/{{ webserver_apache_name }}/conf.d/10-wordpress.ini"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    create: 'true'
+    backup: 'false'
+  with_items: "{{ wordpress_php_options }}"
+  when: php_install_status_apache.stat.exists
+  notify: "restart webserver {{ webserver_name }}"
+
 - name: "Copy Wordpress Configuration File for Apache2."
   template:
     src: wordpress.conf.j2
     dest: "{{ apache2_http_site_dir }}/wordpress.conf"
     owner: root
     group: root
-    mode: '0600'
-    backup: 'yes'
-    force: 'yes'
-  notify: reload webserver
+    mode: 0600
+    backup: 'true'
+    force: 'true'
+  notify: "reload webserver {{ webserver_name }}"
 
 - name: "Enable Apache2 Modules."
   apache2_module:
@@ -47,13 +56,24 @@
   command: a2ensite wordpress.conf
   args:
     creates: "/etc/apache2/sites-enabled/wordpress.conf"
-  notify: reload webserver
+  notify: "reload webserver {{ webserver_name }}"
   when: ansible_os_family == "Debian"
 
-- name: "Copy the Wordpress scripts."
+- name: "Ensure Wordpress Scripts Directory exists."
+  file:
+    path: "{{ wordpress_scripts_dir }}"
+    state: directory
+    mode: 0750
+    owner: root
+    group: root
+
+- name: "Copy the Wordpress Scripts."
   template:
     src: "{{ item }}"
-    dest: "{{ common_scripting_path }}/{{ item }}"
+    dest: "{{ wordpress_scripts_dir }}/{{ item }}"
+    owner: root
+    group: root
+    mode: 0750
   with_items:
     - wordpress_set_secure_dir_perms.sh
 
@@ -69,27 +89,33 @@
     dest: "{{ wordpress_web_dir }}/wp-config.php"
     owner: "{{ apache2_http_user }}"
     group: "{{ apache2_http_user }}"
-    mode: '0600'
-    backup: 'yes'
-    force: 'yes'
+    mode: 0600
+    backup: 'true'
+    force: 'true'
 
 - name: "Upload Backup logrotate Configuration."
   template:
-    src: wordpress-backup.logrotate.j2
-    dest: /etc/logrotate.d/wordpress-backup"
-    mode: '0755'
+    src: wordpress_backup.logrotate.j2
+    dest: /etc/logrotate.d/wordpress_backup
+    mode: 0644
     owner: root
     group: root
 
+- name: "Set Secure Permissions."
+  shell: /bin/bash "{{ wordpress_scripts_dir }}/wordpress_set_secure_dir_perms.sh"
+  args:
+    chdir: /tmp/
+    executable: /bin/bash
+
 - name: "Upload Backup Script."
   template:
-    src: wordpress-backup.sh.j2
-    dest: "{{ common_scripting_path }}/wordpress-backup.sh"
+    src: wordpress_backup.sh.j2
+    dest: "{{ wordpress_scripts_dir }}/wordpress_backup.sh"
     owner: root
     group: root
-    mode: '0700'
-    backup: 'yes'
-    force: 'yes'
+    mode: 0750
+    backup: 'true'
+    force: 'true'
   when: wordpress_backup | bool
 
 - name: "Configure Backup Script Cron."
@@ -99,11 +125,6 @@
     hour: '1'
     minute: '0'
     user: root
-    job: "/bin/bash {{ common_scripting_path }}/wordpress-backup.sh"
+    job: "/bin/bash {{ wordpress_scripts_dir }}/wordpress_backup.sh"
     state: "{% if wordpress_backup %}present{% else %}absent{% endif %}"
 
-- name: "Set Secure Permissions."
-  shell: /bin/bash "{{ common_scripting_path }}/wordpress_set_secure_dir_perms.sh"
-  args:
-    chdir: /tmp/
-    executable: /bin/bash
