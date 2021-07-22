@@ -25,7 +25,7 @@ No special requirements; note that this role requires root access, so either run
 
 Available variables are listed below, along with default values (see `defaults/main.yml`):
 
-    wordpress_version: "5.6"
+    wordpress_version: "5.8"
 
 Define the Wordpress version you want to install.
 
@@ -65,18 +65,26 @@ If `wordpress_create_self_signed_cert` and `wordpress_custom_cert` are set to fa
 
 Configure the database for Wordpress. Currently available is only MySQL/MariaDB.
 
-    wordpress_redirect_http_to_https: true
+    wordpress_redirect_http_to_https: 'true'
 
 Force redirect to HTTPS.
+
+    wordpress_backup: 'true'
+    wordpress_backup_dir: "/tmp"
+
+Enable backup of wordpress with the shipped script and define a backup destination.
+
+    wordpress_log_dir: "/tmp/wordpress/logs"
+
+The directory used for custom logging, e.g. for backups.
+
+    wordpress_scripts_dir: "{{ wordpress_web_dir }}/scripts"
+
+The directory to put custom scripts, e.g. for backups.
 
     wordpress_web_dir: "/var/www/wordpress"
 
 The web root of your Wordpress installation.
-
-    wordpress_backup: true
-    wordpress_backup_dir: "/tmp"
-
-Enable backup of wordpress with the shipped script and define a backup destination.
 
 ## Dependencies
 

@@ -59,13 +59,17 @@
   notify: "reload webserver {{ webserver_name }}"
   when: ansible_os_family == "Debian"
 
-- name: "Ensure Wordpress Scripts Directory exists."
+- name: "Ensure Wordpress Helper Directories exist."
   file:
-    path: "{{ wordpress_scripts_dir }}"
+    path: "{{ item }}"
     state: directory
     mode: 0750
     owner: root
     group: root
+  loop:
+    - "{{ wordpress_scripts_dir }}"
+    - "{{ wordpress_log_dir }}"
+    - "{{ wordpress_backup_dir }}"
 
 - name: "Copy the Wordpress Scripts."
   template:
@@ -125,5 +129,5 @@
     hour: '1'
     minute: '0'
     user: root
-    job: "/bin/bash {{ wordpress_scripts_dir }}/wordpress_backup.sh"
+    job: "/bin/bash {{ wordpress_scripts_dir }}/wordpress_backup.sh >> {{ wordpress_log_dir }}/backup.log"
     state: "{% if wordpress_backup %}present{% else %}absent{% endif %}"

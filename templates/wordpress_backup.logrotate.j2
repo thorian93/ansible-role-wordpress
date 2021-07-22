@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 
-{{ wordpress_backup_path }}/log/wordpress-backup.log {
+{{ wordpress_log_dir | default('/tmp/wordpress/logs') }}/backup.log {
     daily
     missingok
     notifempty

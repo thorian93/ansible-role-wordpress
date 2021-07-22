@@ -17,8 +17,8 @@ set -e
 
 # Variables:
 wordpress_path="{{ wordpress_web_dir | default('/var/www/wordpress') }}"
-backup_target="{{ wordpress_backup_path | default('/tmp/wordpress_backup') }}"
-logfile="{{ wordpress_backup_path }}/wordpress-backup.log"
+backup_target="{{ wordpress_backup_dir | default('/tmp/wordpress/backup') }}"
+logfile="{{ wordpress_log_dir | default('/tmp/wordpress/logs') }}/backup.log"
 exe_rsync="$(command -v rsync)"
 opts_rsync="-avzh"
 exe_tar="$(command -v tar)"
@@ -64,6 +64,7 @@ done
 # Functions:
 
 _initialize() {
+    echo "Backup started. $(date)"
     if [ ! -d "${backup_target}" ]
     then
         echo "Creating backup target: ${backup_target}"
@@ -71,28 +72,35 @@ _initialize() {
     fi
     if [ ! -d "${wordpress_path}" ]
     then
-        echo 'No wordpress Installation found!' ; exit 1
+        echo 'No Wordpress Installation found!' ; exit 1
     fi
     if [ -z "${database_name}" ]
     then
-        echo 'No wordpress Database specified!' ; exit 1
+        echo 'No Wordpress Database specified!' ; exit 1
     fi
     echo "$(date) - Ready to take off"
 }
 
 _backup_database() {
-    echo "$(date) - Dump Database"
+    echo "$(date) - Dump Database."
     ${exe_mysqldump} ${opts_mysqldump} "${database_name}" -h"${database_host}" -u"${database_user}" -p"${database_pass}" > "${backup_target}/wordpress_db_backup.sql"
+    echo "$(date) - Done backing up Database."
 }
 
 _backup_files() {
     echo "$(date) - Backup Files"
     ${exe_rsync} ${opts_rsync} "${wordpress_path}/" "${backup_target}/files/"
+  if [ "$?" == "0" ]
+	then
+		echo "$(date) - Done backing up $wordpress_path..."
+	else
+		echo "$(date) - An error occurred during backup."
+	fi
 }
 
 _finish () {
     echo "$(date) - Compress Backup"
-    ${exe_tar} ${opts_tar} "${backup_target}.tar.gz" "${backup_target}"
+    ${exe_tar} ${opts_tar} "${backup_target}.tar.gz" "${backup_target}" 2>&1
     echo "$(date) - All Done"
 }
 
@@ -112,7 +120,7 @@ if [ "${print_help}" == "true" ]
 then
   _help && exit 0
 fi
-_initialize 2>&1|tee -a $logfile
-_backup_database 2>&1|tee -a $logfile
-_backup_files 2>&1|tee -a $logfile
-_finish 2>&1|tee -a $logfile
+_initialize
+_backup_database
+_backup_files
+_finish
